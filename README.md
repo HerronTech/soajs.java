@@ -1,7 +1,7 @@
 # soajs.java
 Soajs JAVA Middle Ware (Filter)
 
-Add this library to your restful service as an external jar (you can find it under dist)
+Add this library to your restful service as an external jar (soajs.java.jar)
 
 Or through POM.xml
 
