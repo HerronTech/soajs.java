@@ -13,19 +13,26 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
 
     @Override
     public ContainerRequest filter(ContainerRequest request) {
-
+        System.out.println("Initiating Soajs Container Request Filter ...");
+        
         // construct soajs JSONObject
         JSONObject soajs = contrcutSoajs(request);
+        System.out.println("Soajs object constructed:");
+        System.out.println("-------------------------");
+        System.out.println(soajs);
+        System.out.println("-------------------------");
 
         // create headers
         InBoundHeaders headers = new InBoundHeaders();
 
         // append soajs to headers (as a string)
         headers.add("soajs", soajs.toString());
-
+        System.out.println("Soajs appended to headers");
+        
         // Assign header to request
         request.setHeaders((InBoundHeaders) headers);
-
+        System.out.println("Request updated successfully!");
+        
         return request;
     }
 
