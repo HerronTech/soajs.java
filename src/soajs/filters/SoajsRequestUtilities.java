@@ -20,13 +20,22 @@ public class SoajsRequestUtilities {
     }
     
     public static String getHost(JSONObject soajs, String serviceName){
-        String host = soajs.getJSONObject("awareness").getString("host");
-        int port = soajs.getJSONObject("awareness").getInt("port");
+        String output = getHost(soajs);
         
         if(!serviceName.equals("controller")){
-            return host+":"+port+"/"+serviceName+"/";
+            return output+serviceName+"/";
         }else{
-            return host+":"+port+"/";
+            return output;
+        }
+    }
+    
+    public static String getHost(JSONObject soajs, String serviceName, String version){
+        String output = getHost(soajs);
+        
+        if(!serviceName.equals("controller")){
+            return output+serviceName+"/v"+version+"/";
+        }else{
+            return output;
         }
     }
 }
