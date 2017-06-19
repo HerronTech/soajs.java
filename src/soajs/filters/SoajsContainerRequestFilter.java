@@ -73,6 +73,7 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
             soajs.put("servicesConfig", injectedObject.getJSONObject("key").getJSONObject("config"));
             soajs.put("device", injectedObject.getString("device"));
             soajs.put("geo", injectedObject.getJSONObject("geo"));
+            soajs.put("awareness", injectedObject.getJSONObject("awareness"));
         }
 
         return soajs;
@@ -154,6 +155,19 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
             } else {
                 output.put("urac", JSONObject.NULL);
             }
+            
+            if (input.has("awareness")) {
+                JSONObject awareness = input.getJSONObject("awareness");
+                
+                String[] variables = {"host", "port"};
+                String[] variablesTypes = {"string", "int"};
+                String[] defaultIfDoesntExist = {"", ""};
+                JSONObject filteredAwareness = filterObject(awareness, variables, variablesTypes, defaultIfDoesntExist);
+
+                output.put("awareness", filteredAwareness);
+            } else {
+                output.put("awareness", new JSONObject());
+            }
 
             return output;
         } catch (Exception e) {
@@ -183,7 +197,11 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
                 if (variablesTypes[i].equalsIgnoreCase("object")) {
                     output.put(variables[i], input.getJSONObject(variables[i]));
                 } else {
-                    output.put(variables[i], input.getString(variables[i]));
+                    if (variablesTypes[i].equalsIgnoreCase("int")) {
+                    output.put(variables[i], input.getInt(variables[i]));
+                    } else {
+                        output.put(variables[i], input.getString(variables[i]));
+                    }
                 }
             } else if (defaultIfDoesntExist != null) {
 
