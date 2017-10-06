@@ -26,7 +26,7 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
         String soajsEnv = System.getenv("SOAJS_ENV");
 
         if (soajsRegistryApi != null && soajsEnv != null) {
-
+            
             SoajsRegistry.env = soajsEnv;
             SoajsRegistry.serviceName = "test";
             SoajsRegistry.soajsRegistryApi = soajsRegistryApi;

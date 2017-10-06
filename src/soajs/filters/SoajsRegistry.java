@@ -23,7 +23,6 @@ public class SoajsRegistry {
     public static JSONObject registryStruct = new JSONObject();
     public static JSONObject autoReloadTimeout = new JSONObject();
     private static Timer timer = new Timer();
-
     public static String env;
     public static String serviceName;
     public static String soajsRegistryApi;
@@ -51,10 +50,12 @@ public class SoajsRegistry {
 
     public static JSONObject getDatabases(String dbName) {
         if (env != null && registryStruct.has(env)) {
-            if (registryStruct.getJSONObject(env).has("tenantMetaDB") && registryStruct.getJSONObject(env).getJSONObject("tenantMetaDB").has(dbName)) {
+            if (registryStruct.getJSONObject(env).has("tenantMetaDB") 
+                    && dbName!= null && !dbName.isEmpty() && registryStruct.getJSONObject(env).getJSONObject("tenantMetaDB").has(dbName)) {
                 return registryStruct.getJSONObject(env).getJSONObject("tenantMetaDB").getJSONObject(dbName);
             }
-            if (registryStruct.getJSONObject(env).has("coreDB") && registryStruct.getJSONObject(env).getJSONObject("coreDB").has(dbName)) {
+            if (registryStruct.getJSONObject(env).has("coreDB")  
+                    && dbName!= null && !dbName.isEmpty() && registryStruct.getJSONObject(env).getJSONObject("coreDB").has(dbName)) {
                 return registryStruct.getJSONObject(env).getJSONObject("coreDB").getJSONObject(dbName);
             }
         }
@@ -90,7 +91,8 @@ public class SoajsRegistry {
     }
 
     public static JSONObject getResources(String resourceName) {
-        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("resources")) {
+        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("resources") 
+                && resourceName!= null && !resourceName.isEmpty() && registryStruct.getJSONObject(env).getJSONObject("resources").has(resourceName)) {
             return registryStruct.getJSONObject(env).getJSONObject("resources").getJSONObject(resourceName);
         }
         return null;
@@ -104,7 +106,8 @@ public class SoajsRegistry {
     }
 
     public static JSONObject getServices(String serviceName) {
-        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("services")) {
+        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("services") 
+                && serviceName!= null && !serviceName.isEmpty() && registryStruct.getJSONObject(env).getJSONObject("services").has(serviceName)) {
             return registryStruct.getJSONObject(env).getJSONObject("services").getJSONObject(serviceName);
         }
         return null;
@@ -118,7 +121,8 @@ public class SoajsRegistry {
     }
 
     public static JSONObject getDaemons(String daemonName) {
-        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("daemons")) {
+        if (env != null && registryStruct.has(env) && registryStruct.getJSONObject(env).has("daemons") 
+                & daemonName!= null && !daemonName.isEmpty() && registryStruct.getJSONObject(env).getJSONObject("daemons").has(daemonName)) {
             return registryStruct.getJSONObject(env).getJSONObject("daemons").getJSONObject(daemonName);
         }
         return null;
@@ -159,8 +163,8 @@ public class SoajsRegistry {
             }
 
             if (autoReloadTimeout.getJSONObject(env).has("timeout")) {
-//                timer.cancel();
-//                timer.purge();
+                timer.cancel();
+                timer.purge();
             } else {
                 autoReloadTimeout.getJSONObject(env).put("setBy", setBy);
                 autoReloadTimeout.getJSONObject(env).put("timeout", "TIMEOUT");
@@ -172,15 +176,9 @@ public class SoajsRegistry {
         return true;
     }
 
-    private static Runnable autoReload(String soajsEnv, String soajsRegistryApi, String serviceName, String setBy) {
-        execRegistry();
-        SoajsTimerTask s = new SoajsTimerTask();
-        return s;
-    }
-
     private static JSONObject request(String urlPath) {
         try {
-
+            
             URL url = new URL(urlPath);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
