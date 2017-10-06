@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SoajsContainerRequestFilter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;soajs.java&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">soajs.filters</a> &gt; <span class="el_source">SoajsContainerRequestFilter.java</span></div><h1>SoajsContainerRequestFilter.java</h1><pre class="source lang-java linenums">package soajs.filters;
+
+import com.sun.jersey.core.header.InBoundHeaders;
+import com.sun.jersey.spi.container.ContainerRequest;
+import com.sun.jersey.spi.container.ContainerRequestFilter;
+import org.json.JSONObject;
+
+/**
+ *
+ * @author Etienne
+ */
+<span class="fc" id="L12">public class SoajsContainerRequestFilter implements ContainerRequestFilter {</span>
+    
+    @Override
+    public ContainerRequest filter(ContainerRequest request) {
+<span class="fc" id="L16">        System.out.println(&quot;Initiating Soajs Container Request Filter ...&quot;);</span>
+
+        // construct soajs JSONObject
+<span class="fc" id="L19">        JSONObject soajs = contrcutSoajs(request);</span>
+<span class="fc" id="L20">        System.out.println(&quot;Soajs object constructed:&quot;);</span>
+<span class="fc" id="L21">        System.out.println(&quot;-------------------------&quot;);</span>
+<span class="fc" id="L22">        System.out.println(soajs);</span>
+<span class="fc" id="L23">        System.out.println(&quot;-------------------------&quot;);</span>
+
+<span class="fc" id="L25">        String soajsRegistryApi = System.getenv(&quot;SOAJS_REGISTRY_API&quot;);</span>
+<span class="fc" id="L26">        String soajsEnv = System.getenv(&quot;SOAJS_ENV&quot;);</span>
+
+<span class="pc bpc" id="L28" title="2 of 4 branches missed.">        if (soajsRegistryApi != null &amp;&amp; soajsEnv != null) {</span>
+            
+<span class="fc" id="L30">            SoajsRegistry.env = soajsEnv;</span>
+<span class="fc" id="L31">            SoajsRegistry.serviceName = &quot;test&quot;;</span>
+<span class="fc" id="L32">            SoajsRegistry.soajsRegistryApi = soajsRegistryApi;</span>
+<span class="fc" id="L33">            SoajsRegistry.setBy = &quot;daher&quot;;</span>
+            
+<span class="fc" id="L35">            SoajsRegistry.execRegistry();</span>
+        }
+
+<span class="fc" id="L38">        soajs.put(&quot;soajsRegistryApi&quot;, soajsRegistryApi);</span>
+<span class="fc" id="L39">        soajs.put(&quot;soajsEnv&quot;, soajsEnv);</span>
+
+        // create headers
+<span class="fc" id="L42">        InBoundHeaders headers = new InBoundHeaders();</span>
+
+        // append soajs to headers (as a string)
+<span class="fc" id="L45">        headers.add(&quot;soajs&quot;, soajs.toString());</span>
+<span class="fc" id="L46">        System.out.println(&quot;Soajs appended to headers&quot;);</span>
+
+        // Assign header to request
+<span class="fc" id="L49">        request.setHeaders((InBoundHeaders) headers);</span>
+<span class="fc" id="L50">        System.out.println(&quot;Request updated successfully!&quot;);</span>
+
+<span class="fc" id="L52">        return request;</span>
+    }
+    
+    /**
+     * map injected object &amp; construct SOAJS object
+     *
+     * @param request
+     * @return JSONObject
+     */
+    private JSONObject contrcutSoajs(ContainerRequest request) {
+<span class="fc" id="L62">        JSONObject injectedObject = mapInjectedObject(request);</span>
+<span class="fc" id="L63">        JSONObject soajs = new JSONObject();</span>
+
+<span class="pc bpc" id="L65" title="4 of 8 branches missed.">        if (injectedObject.has(&quot;application&quot;)</span>
+                &amp;&amp; injectedObject.getJSONObject(&quot;application&quot;).has(&quot;package&quot;)
+                &amp;&amp; injectedObject.has(&quot;key&quot;)
+                &amp;&amp; injectedObject.has(&quot;tenant&quot;)) {
+
+<span class="fc" id="L70">            soajs = new JSONObject();</span>
+
+<span class="fc" id="L72">            JSONObject tenant = injectedObject.getJSONObject(&quot;tenant&quot;);</span>
+
+<span class="fc" id="L74">            JSONObject key = new JSONObject();</span>
+<span class="fc" id="L75">            key.put(&quot;iKey&quot;, injectedObject.getJSONObject(&quot;key&quot;).getString(&quot;iKey&quot;));</span>
+<span class="fc" id="L76">            key.put(&quot;eKey&quot;, injectedObject.getJSONObject(&quot;key&quot;).getString(&quot;eKey&quot;));</span>
+<span class="fc" id="L77">            tenant.put(&quot;key&quot;, key);</span>
+
+<span class="fc" id="L79">            JSONObject application = injectedObject.getJSONObject(&quot;application&quot;);</span>
+
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">            if (injectedObject.has(&quot;package&quot;)) {</span>
+<span class="fc" id="L82">                application.put(&quot;package_acl&quot;, injectedObject.getJSONObject(&quot;package&quot;).get(&quot;acl&quot;)); // can be null</span>
+<span class="fc" id="L83">                application.put(&quot;package_acl_all_env&quot;, injectedObject.getJSONObject(&quot;package&quot;).get(&quot;acl_all_env&quot;)); // can b null</span>
+            }
+<span class="fc" id="L85">            tenant.put(&quot;application&quot;, application);</span>
+<span class="fc" id="L86">            soajs.put(&quot;tenant&quot;, tenant);</span>
+
+<span class="fc" id="L88">            soajs.put(&quot;urac&quot;, injectedObject.get(&quot;urac&quot;)); // can be null</span>
+<span class="fc" id="L89">            soajs.put(&quot;servicesConfig&quot;, injectedObject.getJSONObject(&quot;key&quot;).getJSONObject(&quot;config&quot;));</span>
+<span class="fc" id="L90">            soajs.put(&quot;device&quot;, injectedObject.getString(&quot;device&quot;));</span>
+<span class="fc" id="L91">            soajs.put(&quot;geo&quot;, injectedObject.getJSONObject(&quot;geo&quot;));</span>
+<span class="fc" id="L92">            soajs.put(&quot;awareness&quot;, injectedObject.getJSONObject(&quot;awareness&quot;));</span>
+        }
+
+<span class="fc" id="L95">        return soajs;</span>
+    }
+
+    /**
+     * filter 'soajsinjectobj' sent in header
+     *
+     * @param request
+     * @return JSONObject
+     */
+    private JSONObject mapInjectedObject(ContainerRequest request) {
+
+<span class="fc" id="L106">        JSONObject output = new JSONObject();</span>
+
+        try {
+<span class="fc" id="L109">            String soajsinjectobjAsString = request.getHeaderValue(&quot;soajsinjectobj&quot;);</span>
+<span class="fc" id="L110">            JSONObject input = new JSONObject(soajsinjectobjAsString);</span>
+
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            if (input.has(&quot;tenant&quot;)) {</span>
+<span class="fc" id="L113">                JSONObject tenant = input.getJSONObject(&quot;tenant&quot;);</span>
+
+<span class="fc" id="L115">                String[] variables = {&quot;id&quot;, &quot;code&quot;};</span>
+<span class="fc" id="L116">                String[] variablesTypes = {&quot;string&quot;, &quot;string&quot;};</span>
+<span class="fc" id="L117">                JSONObject filteredTenant = filterObject(tenant, variables, variablesTypes, null);</span>
+
+<span class="fc" id="L119">                output.put(&quot;tenant&quot;, filteredTenant);</span>
+            }
+
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if (input.has(&quot;key&quot;)) {</span>
+<span class="fc" id="L123">                JSONObject key = input.getJSONObject(&quot;key&quot;);</span>
+
+<span class="fc" id="L125">                String[] variables = {&quot;config&quot;, &quot;iKey&quot;, &quot;eKey&quot;};</span>
+<span class="fc" id="L126">                String[] variablesTypes = {&quot;object&quot;, &quot;string&quot;, &quot;string&quot;};</span>
+<span class="fc" id="L127">                JSONObject filteredKey = filterObject(key, variables, variablesTypes, null);</span>
+
+<span class="fc" id="L129">                output.put(&quot;key&quot;, filteredKey);</span>
+            }
+
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">            if (input.has(&quot;application&quot;)) {</span>
+<span class="fc" id="L133">                JSONObject application = input.getJSONObject(&quot;application&quot;);</span>
+
+<span class="fc" id="L135">                String[] variables = {&quot;product&quot;, &quot;package&quot;, &quot;appId&quot;, &quot;acl&quot;, &quot;acl_all_env&quot;};</span>
+<span class="fc" id="L136">                String[] variablesTypes = {&quot;string&quot;, &quot;string&quot;, &quot;string&quot;, &quot;object&quot;, &quot;object&quot;};</span>
+<span class="fc" id="L137">                String[] defaultIfDoesntExist = {&quot;notForMe&quot;, &quot;notForMe&quot;, &quot;notForMe&quot;, null, null};</span>
+<span class="fc" id="L138">                JSONObject filteredApplication = filterObject(application, variables, variablesTypes, defaultIfDoesntExist);</span>
+
+<span class="fc" id="L140">                output.put(&quot;application&quot;, filteredApplication);</span>
+            }
+
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">            if (input.has(&quot;package&quot;)) {</span>
+<span class="fc" id="L144">                JSONObject pack = input.getJSONObject(&quot;package&quot;);</span>
+
+<span class="fc" id="L146">                String[] variables = {&quot;acl&quot;, &quot;acl_all_env&quot;};</span>
+<span class="fc" id="L147">                String[] variablesTypes = {&quot;object&quot;, &quot;object&quot;};</span>
+<span class="fc" id="L148">                String[] defaultIfDoesntExist = {null, null};</span>
+<span class="fc" id="L149">                JSONObject filteredPack = filterObject(pack, variables, variablesTypes, defaultIfDoesntExist);</span>
+
+<span class="fc" id="L151">                output.put(&quot;package&quot;, filteredPack);</span>
+            }
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">            if (input.has(&quot;device&quot;)) {</span>
+<span class="fc" id="L155">                String device = input.getString(&quot;device&quot;);</span>
+<span class="fc" id="L156">                output.put(&quot;device&quot;, device);</span>
+<span class="fc" id="L157">            } else {</span>
+<span class="fc" id="L158">                output.put(&quot;device&quot;, &quot;&quot;);</span>
+            }
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (input.has(&quot;geo&quot;)) {</span>
+<span class="fc" id="L162">                JSONObject geo = input.getJSONObject(&quot;geo&quot;);</span>
+<span class="fc" id="L163">                output.put(&quot;geo&quot;, geo);</span>
+<span class="fc" id="L164">            } else {</span>
+<span class="fc" id="L165">                output.put(&quot;geo&quot;, new JSONObject());</span>
+            }
+
+<span class="fc bfc" id="L168" title="All 2 branches covered.">            if (input.has(&quot;urac&quot;)) {</span>
+<span class="fc" id="L169">                JSONObject urac = input.getJSONObject(&quot;urac&quot;);</span>
+<span class="fc" id="L170">                output.put(&quot;urac&quot;, urac);</span>
+<span class="fc" id="L171">            } else {</span>
+<span class="fc" id="L172">                output.put(&quot;urac&quot;, JSONObject.NULL);</span>
+            }
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (input.has(&quot;awareness&quot;)) {</span>
+<span class="fc" id="L176">                JSONObject awareness = input.getJSONObject(&quot;awareness&quot;);</span>
+
+<span class="fc" id="L178">                String[] variables = {&quot;host&quot;, &quot;port&quot;};</span>
+<span class="fc" id="L179">                String[] variablesTypes = {&quot;string&quot;, &quot;int&quot;};</span>
+<span class="fc" id="L180">                String[] defaultIfDoesntExist = {&quot;&quot;, &quot;&quot;};</span>
+<span class="fc" id="L181">                JSONObject filteredAwareness = filterObject(awareness, variables, variablesTypes, defaultIfDoesntExist);</span>
+
+<span class="fc" id="L183">                output.put(&quot;awareness&quot;, filteredAwareness);</span>
+<span class="fc" id="L184">            } else {</span>
+<span class="fc" id="L185">                output.put(&quot;awareness&quot;, new JSONObject());</span>
+            }
+
+<span class="fc" id="L188">            return output;</span>
+<span class="nc" id="L189">        } catch (Exception e) {</span>
+<span class="nc" id="L190">            e.printStackTrace();</span>
+<span class="nc" id="L191">            return output;</span>
+        }
+    }
+
+    /**
+     * Return a JSONObject which will have only the variables sent in variables
+     * if the variable was not found &amp; defaultIfDoesntExist is not null, the
+     * variable will be defaulted to the value sent or ignored if the value sent
+     * is 'notForMe'
+     *
+     * @param input
+     * @param variables
+     * @param variablesTypes
+     * @param defaultIfDoesntExist
+     * @return JSONObject
+     */
+    private JSONObject filterObject(JSONObject input, String variables[], String variablesTypes[], String defaultIfDoesntExist[]) {
+
+<span class="fc" id="L209">        JSONObject output = new JSONObject();</span>
+
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        for (int i = 0; i &lt; variables.length; i++) {</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">            if (input.has(variables[i])) {</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">                if (variablesTypes[i].equalsIgnoreCase(&quot;object&quot;)) {</span>
+<span class="fc" id="L214">                    output.put(variables[i], input.getJSONObject(variables[i]));</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">                } else if (variablesTypes[i].equalsIgnoreCase(&quot;int&quot;)) {</span>
+<span class="fc" id="L216">                    output.put(variables[i], input.getInt(variables[i]));</span>
+                } else {
+<span class="fc" id="L218">                    output.put(variables[i], input.getString(variables[i]));</span>
+                }
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">            } else if (defaultIfDoesntExist != null) {</span>
+
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">                if (defaultIfDoesntExist[i] == null) {</span>
+<span class="fc" id="L223">                    output.put(variables[i], JSONObject.NULL);</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">                } else if (!defaultIfDoesntExist[i].equalsIgnoreCase(&quot;notForMe&quot;)) {</span>
+<span class="nc" id="L225">                    output.put(variables[i], defaultIfDoesntExist[i]);</span>
+                }
+
+            }
+        }
+<span class="fc" id="L230">        return output;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

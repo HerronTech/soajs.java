@@ -10,11 +10,11 @@ import org.json.JSONObject;
  * @author Etienne
  */
 public class SoajsContainerRequestFilter implements ContainerRequestFilter {
-
+    
     @Override
     public ContainerRequest filter(ContainerRequest request) {
         System.out.println("Initiating Soajs Container Request Filter ...");
-        
+
         // construct soajs JSONObject
         JSONObject soajs = contrcutSoajs(request);
         System.out.println("Soajs object constructed:");
@@ -22,20 +22,36 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
         System.out.println(soajs);
         System.out.println("-------------------------");
 
+        String soajsRegistryApi = System.getenv("SOAJS_REGISTRY_API");
+        String soajsEnv = System.getenv("SOAJS_ENV");
+
+        if (soajsRegistryApi != null && soajsEnv != null) {
+            
+            SoajsRegistry.env = soajsEnv;
+            SoajsRegistry.serviceName = "test";
+            SoajsRegistry.soajsRegistryApi = soajsRegistryApi;
+            SoajsRegistry.setBy = "daher";
+            
+            SoajsRegistry.execRegistry();
+        }
+
+        soajs.put("soajsRegistryApi", soajsRegistryApi);
+        soajs.put("soajsEnv", soajsEnv);
+
         // create headers
         InBoundHeaders headers = new InBoundHeaders();
 
         // append soajs to headers (as a string)
         headers.add("soajs", soajs.toString());
         System.out.println("Soajs appended to headers");
-        
+
         // Assign header to request
         request.setHeaders((InBoundHeaders) headers);
         System.out.println("Request updated successfully!");
-        
+
         return request;
     }
-
+    
     /**
      * map injected object & construct SOAJS object
      *
@@ -155,10 +171,10 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
             } else {
                 output.put("urac", JSONObject.NULL);
             }
-            
+
             if (input.has("awareness")) {
                 JSONObject awareness = input.getJSONObject("awareness");
-                
+
                 String[] variables = {"host", "port"};
                 String[] variablesTypes = {"string", "int"};
                 String[] defaultIfDoesntExist = {"", ""};
@@ -196,12 +212,10 @@ public class SoajsContainerRequestFilter implements ContainerRequestFilter {
             if (input.has(variables[i])) {
                 if (variablesTypes[i].equalsIgnoreCase("object")) {
                     output.put(variables[i], input.getJSONObject(variables[i]));
-                } else {
-                    if (variablesTypes[i].equalsIgnoreCase("int")) {
+                } else if (variablesTypes[i].equalsIgnoreCase("int")) {
                     output.put(variables[i], input.getInt(variables[i]));
-                    } else {
-                        output.put(variables[i], input.getString(variables[i]));
-                    }
+                } else {
+                    output.put(variables[i], input.getString(variables[i]));
                 }
             } else if (defaultIfDoesntExist != null) {
 

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SoajsRegistry.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;soajs.java&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">soajs.filters</a> &gt; <span class="el_source">SoajsRegistry.java</span></div><h1>SoajsRegistry.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package soajs.filters;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Timer;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+/**
+ *
+ * @author Etienne
+ */
+<span class="nc" id="L21">public class SoajsRegistry {</span>
+
+<span class="fc" id="L23">    public static JSONObject registryStruct = new JSONObject();</span>
+<span class="fc" id="L24">    public static JSONObject autoReloadTimeout = new JSONObject();</span>
+<span class="fc" id="L25">    private static Timer timer = new Timer();</span>
+    public static String env;
+    public static String serviceName;
+    public static String soajsRegistryApi;
+    public static String setBy;
+
+    public static boolean reload() {
+<span class="pc bpc" id="L32" title="1 of 4 branches missed.">        if (env != null &amp;&amp; serviceName != null) {</span>
+<span class="fc" id="L33">            return execRegistry();</span>
+        } else {
+<span class="fc" id="L35">            new Error(&quot;Cannot reload registry. Env and serviceName are not set&quot;).printStackTrace();</span>
+<span class="fc" id="L36">            return false;</span>
+        }
+    }
+
+    public static JSONObject getDatabases() {
+<span class="pc bpc" id="L41" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">            if (!registryStruct.getJSONObject(env).has(&quot;tenantMetaDB&quot;) &amp;&amp; !registryStruct.getJSONObject(env).has(&quot;coreDB&quot;)) {</span>
+<span class="fc" id="L43">                return null;</span>
+            } else {
+<span class="fc" id="L45">                return SoajsRequestUtilities.merge(registryStruct.getJSONObject(env).getJSONObject(&quot;tenantMetaDB&quot;), registryStruct.getJSONObject(env).getJSONObject(&quot;coreDB&quot;));</span>
+            }
+        }
+<span class="fc" id="L48">        return null;</span>
+    }
+
+    public static JSONObject getDatabases(String dbName) {
+<span class="pc bpc" id="L52" title="2 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="pc bpc" id="L53" title="3 of 8 branches missed.">            if (registryStruct.getJSONObject(env).has(&quot;tenantMetaDB&quot;) </span>
+                    &amp;&amp; dbName!= null &amp;&amp; !dbName.isEmpty() &amp;&amp; registryStruct.getJSONObject(env).getJSONObject(&quot;tenantMetaDB&quot;).has(dbName)) {
+<span class="fc" id="L55">                return registryStruct.getJSONObject(env).getJSONObject(&quot;tenantMetaDB&quot;).getJSONObject(dbName);</span>
+            }
+<span class="pc bpc" id="L57" title="3 of 8 branches missed.">            if (registryStruct.getJSONObject(env).has(&quot;coreDB&quot;)  </span>
+                    &amp;&amp; dbName!= null &amp;&amp; !dbName.isEmpty() &amp;&amp; registryStruct.getJSONObject(env).getJSONObject(&quot;coreDB&quot;).has(dbName)) {
+<span class="fc" id="L59">                return registryStruct.getJSONObject(env).getJSONObject(&quot;coreDB&quot;).getJSONObject(dbName);</span>
+            }
+        }
+<span class="fc" id="L62">        return null;</span>
+    }
+
+    public static JSONObject getServiceConfig() {
+<span class="pc bpc" id="L66" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L67">            return registryStruct.getJSONObject(env).getJSONObject(&quot;serviceConfig&quot;);</span>
+        }
+<span class="fc" id="L69">        return null;</span>
+    }
+
+    public static JSONObject getDeployer() {
+<span class="pc bpc" id="L73" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L74">            return registryStruct.getJSONObject(env).getJSONObject(&quot;deployer&quot;);</span>
+        }
+<span class="fc" id="L76">        return null;</span>
+    }
+
+    public static JSONObject getCustom() {
+<span class="pc bpc" id="L80" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L81">            return registryStruct.getJSONObject(env).getJSONObject(&quot;custom&quot;);</span>
+        }
+<span class="fc" id="L83">        return null;</span>
+    }
+
+    public static JSONObject getResources() {
+<span class="pc bpc" id="L87" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L88">            return registryStruct.getJSONObject(env).getJSONObject(&quot;resources&quot;);</span>
+        }
+<span class="fc" id="L90">        return null;</span>
+    }
+
+    public static JSONObject getResources(String resourceName) {
+<span class="pc bpc" id="L94" title="5 of 12 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env) &amp;&amp; registryStruct.getJSONObject(env).has(&quot;resources&quot;) </span>
+                &amp;&amp; resourceName!= null &amp;&amp; !resourceName.isEmpty() &amp;&amp; registryStruct.getJSONObject(env).getJSONObject(&quot;resources&quot;).has(resourceName)) {
+<span class="fc" id="L96">            return registryStruct.getJSONObject(env).getJSONObject(&quot;resources&quot;).getJSONObject(resourceName);</span>
+        }
+<span class="fc" id="L98">        return null;</span>
+    }
+
+    public static JSONObject getServices() {
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L103">            return registryStruct.getJSONObject(env).getJSONObject(&quot;services&quot;);</span>
+        }
+<span class="fc" id="L105">        return null;</span>
+    }
+
+    public static JSONObject getServices(String serviceName) {
+<span class="pc bpc" id="L109" title="5 of 12 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env) &amp;&amp; registryStruct.getJSONObject(env).has(&quot;services&quot;) </span>
+                &amp;&amp; serviceName!= null &amp;&amp; !serviceName.isEmpty() &amp;&amp; registryStruct.getJSONObject(env).getJSONObject(&quot;services&quot;).has(serviceName)) {
+<span class="fc" id="L111">            return registryStruct.getJSONObject(env).getJSONObject(&quot;services&quot;).getJSONObject(serviceName);</span>
+        }
+<span class="fc" id="L113">        return null;</span>
+    }
+
+    public static JSONObject getDaemons() {
+<span class="pc bpc" id="L117" title="1 of 4 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env)) {</span>
+<span class="fc" id="L118">            return registryStruct.getJSONObject(env).getJSONObject(&quot;daemons&quot;);</span>
+        }
+<span class="fc" id="L120">        return null;</span>
+    }
+
+    public static JSONObject getDaemons(String daemonName) {
+<span class="pc bpc" id="L124" title="5 of 12 branches missed.">        if (env != null &amp;&amp; registryStruct.has(env) &amp;&amp; registryStruct.getJSONObject(env).has(&quot;daemons&quot;) </span>
+                &amp; daemonName!= null &amp;&amp; !daemonName.isEmpty() &amp;&amp; registryStruct.getJSONObject(env).getJSONObject(&quot;daemons&quot;).has(daemonName)) {
+<span class="fc" id="L126">            return registryStruct.getJSONObject(env).getJSONObject(&quot;daemons&quot;).getJSONObject(daemonName);</span>
+        }
+<span class="fc" id="L128">        return null;</span>
+    }
+
+    public static boolean execRegistry() {
+
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">        if (soajsRegistryApi == null || !soajsRegistryApi.contains(&quot;:&quot;)) {</span>
+<span class="fc" id="L134">            new Error(&quot;Invalid format for SOAJS_REGISTRY_API [hostname:port]: &quot; + soajsRegistryApi).printStackTrace();</span>
+<span class="fc" id="L135">            return false;</span>
+        }
+
+<span class="fc" id="L138">        String port = soajsRegistryApi.substring(soajsRegistryApi.indexOf(&quot;:&quot;) + 1);</span>
+
+        try {
+<span class="fc" id="L141">            Integer.parseInt(port);</span>
+<span class="fc" id="L142">        } catch (Exception e) {</span>
+<span class="fc" id="L143">            new Error(&quot;port must be integer: [&quot; + port + &quot;]&quot;).printStackTrace();</span>
+<span class="fc" id="L144">            return false;</span>
+<span class="fc" id="L145">        }</span>
+
+<span class="fc" id="L147">        String urlPath = &quot;http://&quot; + soajsRegistryApi + &quot;/getRegistry?env=&quot; + env + &quot;&amp;serviceName=&quot; + serviceName;</span>
+
+<span class="fc" id="L149">        JSONObject data = request(urlPath); // get registry data</span>
+
+<span class="pc bpc" id="L151" title="1 of 4 branches missed.">        if (data == null || !data.has(&quot;environment&quot;)) {</span>
+<span class="fc" id="L152">            return false;</span>
+        }
+
+<span class="fc" id="L155">        SoajsRegistry.registryStruct.put(data.getString(&quot;environment&quot;), data);</span>
+
+        // autoreload registry stuff
+<span class="fc" id="L158">        JSONObject serviceConfig = getServiceConfig();</span>
+
+<span class="pc bpc" id="L160" title="3 of 6 branches missed.">        if (serviceConfig != null &amp;&amp; serviceConfig.has(&quot;awareness&quot;) &amp;&amp; serviceConfig.getJSONObject(&quot;awareness&quot;).has(&quot;autoRelaodRegistry&quot;)) {</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (!autoReloadTimeout.has(env)) {</span>
+<span class="fc" id="L162">                autoReloadTimeout.put(env, new JSONObject());</span>
+            }
+
+<span class="fc bfc" id="L165" title="All 2 branches covered.">            if (autoReloadTimeout.getJSONObject(env).has(&quot;timeout&quot;)) {</span>
+<span class="fc" id="L166">                timer.cancel();</span>
+<span class="fc" id="L167">                timer.purge();</span>
+            } else {
+<span class="fc" id="L169">                autoReloadTimeout.getJSONObject(env).put(&quot;setBy&quot;, setBy);</span>
+<span class="fc" id="L170">                autoReloadTimeout.getJSONObject(env).put(&quot;timeout&quot;, &quot;TIMEOUT&quot;);</span>
+
+<span class="fc" id="L172">                timer.schedule(new SoajsTimerTask(), 0, serviceConfig.getJSONObject(&quot;awareness&quot;).getLong(&quot;autoRelaodRegistry&quot;));</span>
+            }
+        }
+
+<span class="fc" id="L176">        return true;</span>
+    }
+
+    private static JSONObject request(String urlPath) {
+        try {
+            
+<span class="fc" id="L182">            URL url = new URL(urlPath);</span>
+<span class="fc" id="L183">            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();</span>
+<span class="fc" id="L184">            urlConnection.setRequestMethod(&quot;GET&quot;);</span>
+<span class="fc" id="L185">            urlConnection.setReadTimeout(5000);</span>
+<span class="fc" id="L186">            urlConnection.setConnectTimeout(10000);</span>
+<span class="fc" id="L187">            urlConnection.connect();</span>
+
+<span class="fc" id="L189">            int status = urlConnection.getResponseCode();</span>
+<span class="fc" id="L190">            InputStream inStream = null;</span>
+
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">            if (status == 200) {</span>
+<span class="fc" id="L193">                inStream = urlConnection.getInputStream();</span>
+            } else {
+<span class="nc" id="L195">                inStream = urlConnection.getErrorStream();</span>
+            }
+
+<span class="fc" id="L198">            BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));</span>
+<span class="fc" id="L199">            String temp, response = &quot;&quot;;</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">            while ((temp = bReader.readLine()) != null) {</span>
+<span class="fc" id="L201">                response += temp;</span>
+            }
+
+<span class="fc" id="L204">            JSONObject output = (JSONObject) new JSONTokener(response).nextValue();</span>
+
+<span class="pc bpc" id="L206" title="2 of 4 branches missed.">            if (output.has(&quot;result&quot;) &amp;&amp; output.getBoolean(&quot;result&quot;)) {</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">                if (output.has(&quot;data&quot;)) {</span>
+<span class="fc" id="L208">                    return output.getJSONObject(&quot;data&quot;);</span>
+                }
+            }
+
+<span class="fc" id="L212">        } catch (Exception e) {</span>
+<span class="fc" id="L213">            e.printStackTrace();</span>
+<span class="nc" id="L214">        }</span>
+
+<span class="fc" id="L216">        return null;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
