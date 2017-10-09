@@ -104,7 +104,6 @@ public class SoajsRegistryTest {
         
         SoajsRegistry.env = "dashboard";
         
-        
         String dbName = "urac";
         boolean expResult = true;
         boolean result = SoajsRegistry.getDatabases(dbName) != null;
