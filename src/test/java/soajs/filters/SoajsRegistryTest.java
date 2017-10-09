@@ -86,10 +86,11 @@ public class SoajsRegistryTest {
         assertEquals(expResult2, result2);
         
         SoajsRegistry.env = "dashboard";
-        data.getJSONObject("dashboard").remove("coreDB");
-        data.getJSONObject("dashboard").remove("tenantMetaDB");
+        JSONObject dataWithoutDBs = new JSONObject(data.toString());
+        dataWithoutDBs.getJSONObject("dashboard").remove("coreDB");
+        dataWithoutDBs.getJSONObject("dashboard").remove("tenantMetaDB");
         
-        SoajsRegistry.registryStruct = data;
+        SoajsRegistry.registryStruct = dataWithoutDBs;
         boolean expResult3 = true;
         boolean result3 = SoajsRegistry.getDatabases() == null;
         assertEquals(expResult3, result3);
@@ -103,6 +104,7 @@ public class SoajsRegistryTest {
         System.out.println("getDatabases");
         
         SoajsRegistry.env = "dashboard";
+        SoajsRegistry.registryStruct = data;
         
         String dbName = "urac";
         boolean expResult = true;
