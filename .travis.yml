@@ -5,7 +5,5 @@ jdk:
 
 install: true
 
-script: mvn -DskipTests=true clean verify
-
 after_success:
   - bash <(curl -s https://codecov.io/bash)
