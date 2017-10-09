@@ -5,5 +5,8 @@ jdk:
 
 install: true
 
+script:
+  - mvn test jacoco:report
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
