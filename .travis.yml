@@ -1,5 +1,11 @@
 language: java
+
 jdk:
- - oraclejdk7
+  - openjdk7
+
+install: true
+
+script: mvn -DskipTests=true clean verify
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
