@@ -11,7 +11,7 @@ addons:
 
 script:
     - npm install express
-    - node fakeExpressController
+    - nohup node fakeExpressController FAKECONTROLLER &
     - sleep 2
     
 after_success:
