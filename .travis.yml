@@ -5,9 +5,11 @@ jdk:
 
 install: true
 
+addons:
+  hosts:
+    - localhost
+
 script:
-    - Djava.net.preferIPv4Stack=true 
-    - Djava.net.preferIPv4Addresses=true
     - mvn clean test jacoco:report coveralls:report
 
 after_success:
