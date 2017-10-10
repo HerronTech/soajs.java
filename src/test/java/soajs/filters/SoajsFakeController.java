@@ -30,6 +30,7 @@ public class SoajsFakeController implements Runnable {
                     System.out.println("writing to output stream ....");
                     socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
                     System.out.println("****** done ********");
+                    socket.close();
                 }
             }
         } catch (Exception e) {

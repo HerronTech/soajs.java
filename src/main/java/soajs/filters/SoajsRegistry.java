@@ -205,6 +205,8 @@ public class SoajsRegistry {
 
             if (output.has("result") && output.getBoolean("result")) {
                 if (output.has("data")) {
+                    inStream.close();
+                    bReader.close();
                     return output.getJSONObject("data");
                 }
             }
