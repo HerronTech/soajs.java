@@ -30,6 +30,7 @@ public class SoajsRegistryTest {
     @BeforeClass
     public static void setUpClass() {
         
+        // ***** start fake controller on local run only ****
 //        controllerThread = new Thread(new SoajsFakeController());
 //        controllerThread.start();
 //        soajsFakeController.startServer();
@@ -344,11 +345,10 @@ public class SoajsRegistryTest {
     public void testExecRegistryNoController() {
         System.out.println("execRegistry - no controller");
         
-//        controllerThread.stop();
-        SoajsRegistry.soajsRegistryApi = "127.0.0.1:5000";
+        SoajsRegistry.soajsRegistryApi = "127.0.0.1:7000";
         boolean expResult4 = false;
         boolean result4 = SoajsRegistry.execRegistry();
-//        assertEquals(expResult4, result4);
+        assertEquals(expResult4, result4);
     }
     
 }
