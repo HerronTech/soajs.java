@@ -6,7 +6,7 @@ jdk:
 install: true
 
 script:
-  - mvn -X clean test org.jacoco:jacoco-maven-plugin:report org.eluder.coveralls:coveralls-maven-plugin:report
+    - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

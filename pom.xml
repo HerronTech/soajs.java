@@ -55,10 +55,16 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>2.6</version>
+                        <version>${maven.cobertura.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>cobertura</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                         <configuration>
                             <format>xml</format>
-                            <maxmem>256m</maxmem>
                             <aggregate>true</aggregate>
                         </configuration>
                     </plugin>
