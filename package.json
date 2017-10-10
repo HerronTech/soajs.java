@@ -1,0 +1,26 @@
+{
+  "name": "soajs.java",
+  "description": "SOAJS JAVA middleware",
+  "version": "0.0.1",
+  "author": {
+    "name": "soajs team",
+    "email": "team@soajs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:soajs/soajs.java.git"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+        "request": "2.81.0"  
+  }
+}

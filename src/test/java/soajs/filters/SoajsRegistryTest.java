@@ -32,7 +32,7 @@ public class SoajsRegistryTest {
         
 //        controllerThread = new Thread(new SoajsFakeController());
 //        controllerThread.start();
-        soajsFakeController.startServer();
+//        soajsFakeController.startServer();
             
         
 //        try{
