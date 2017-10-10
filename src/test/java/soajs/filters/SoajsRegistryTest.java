@@ -313,7 +313,7 @@ public class SoajsRegistryTest {
         SoajsRegistry.soajsRegistryApi = "127.0.0.1:5000";
         boolean expResult3 = true;
         boolean result3 = SoajsRegistry.execRegistry();
-//        assertEquals(expResult3, result3);  
+        assertEquals(expResult3, result3);  
     }
     
     /**
@@ -326,12 +326,12 @@ public class SoajsRegistryTest {
         SoajsRegistry.env = "dashboard";
         boolean expResult = true;
         boolean result = SoajsRegistry.reload();
-//        assertEquals(expResult, result);
+        assertEquals(expResult, result);
         
         SoajsRegistry.env = null;
         boolean expResult2 = false;
         boolean result2 = SoajsRegistry.reload();
-//        assertEquals(expResult2, result2);
+        assertEquals(expResult2, result2);
     }
     
     /**
@@ -345,7 +345,7 @@ public class SoajsRegistryTest {
         SoajsRegistry.soajsRegistryApi = "127.0.0.1:5000";
         boolean expResult4 = false;
         boolean result4 = SoajsRegistry.execRegistry();
-//        assertEquals(expResult4, result4);
+        assertEquals(expResult4, result4);
     }
     
 }

@@ -22,10 +22,13 @@ public class SoajsFakeController implements Runnable {
             ServerSocket server = new ServerSocket(5000);
             System.out.println("Listening for connection on port 5000 ....");
             while (true) {
-                 try (Socket socket = server.accept()) {
-                String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + data.toString();
-                socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
-                 }
+                try (Socket socket = server.accept()) {
+                    System.out.println("incoming request ....");
+                    String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + data.toString();
+                    System.out.println("writing to output stream ....");
+                    socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+                    System.out.println("****** done ********");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
