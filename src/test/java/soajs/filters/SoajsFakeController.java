@@ -91,6 +91,7 @@ public class SoajsFakeController {
                 clientSocket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
                 clientSocket.close();
             } catch (IOException e) {
+                System.out.println("error in client ...");
                 e.printStackTrace();
             }
         }

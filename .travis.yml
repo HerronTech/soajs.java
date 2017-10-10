@@ -10,7 +10,4 @@ addons:
     - localhost
 
 script:
-    - mvn clean test jacoco:report coveralls:report
-
-after_success:
-  - mvn clean test jacoco:report coveralls:report
+    - node fakeExpressController
