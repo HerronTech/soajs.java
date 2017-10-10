@@ -16,7 +16,7 @@
         <maven.saga.version>1.5.5</maven.saga.version>
         
         <java.src.version>1.6</java.src.version>
-        <java.test.version>1.8</java.test.version>
+        <java.test.version>1.6</java.test.version>
         <runtime.log>target/velocity.log</runtime.log>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -29,6 +29,7 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.1.0</version>
                 <configuration>
+                    <sourceEncoding>UTF8</sourceEncoding>
                     <jacocoReports>
                         <file>${project.build.directory}/site/jacoco/jacoco.xml</file>
                         <file>
@@ -54,16 +55,10 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>cobertura-maven-plugin</artifactId>
-                        <version>${maven.cobertura.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>cobertura</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <version>2.6</version>
                         <configuration>
                             <format>xml</format>
+                            <maxmem>256m</maxmem>
                             <aggregate>true</aggregate>
                         </configuration>
                     </plugin>
