@@ -10,7 +10,9 @@ addons:
     - localhost
 
 script:
+    - npm install express
     - node fakeExpressController
+    - sleep 2
     
 after_success:
   - mvn clean test jacoco:report coveralls:report
