@@ -5,6 +5,7 @@
  */
 package soajs.filters;
 
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.json.JSONObject;
@@ -19,7 +20,8 @@ public class SoajsFakeController implements Runnable {
 
     public void run() {
         try {
-            ServerSocket server = new ServerSocket(5000);
+            InetAddress address = InetAddress.getByName("127.0.0.1");
+            ServerSocket server = new ServerSocket(5000, 50, address);
             System.out.println("Listening for connection on port 5000 ....");
             while (true) {
                 try (Socket socket = server.accept()) {
