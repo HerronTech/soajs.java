@@ -7,6 +7,3 @@ install: true
 
 script:
     - mvn clean cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
