@@ -6,6 +6,7 @@ jdk:
 install: true
 
 script:
+    - Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses
     - mvn clean test jacoco:report coveralls:report
 
 after_success:
