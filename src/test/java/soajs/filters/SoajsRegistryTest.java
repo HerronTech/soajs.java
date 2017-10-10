@@ -310,7 +310,7 @@ public class SoajsRegistryTest {
         SoajsRegistry.env = "dashboard";
         SoajsRegistry.serviceName = "test";
         SoajsRegistry.setBy = "tester";
-        SoajsRegistry.soajsRegistryApi = "127.0.0.1:5000";
+        SoajsRegistry.soajsRegistryApi = "0.0.0.0:5000";
         boolean expResult3 = true;
         boolean result3 = SoajsRegistry.execRegistry();
         assertEquals(expResult3, result3);  
@@ -342,7 +342,7 @@ public class SoajsRegistryTest {
         System.out.println("execRegistry - no controller");
         
         controllerThread.stop();
-        SoajsRegistry.soajsRegistryApi = "127.0.0.1:5000";
+        SoajsRegistry.soajsRegistryApi = "0.0.0.0:5000";
         boolean expResult4 = false;
         boolean result4 = SoajsRegistry.execRegistry();
         assertEquals(expResult4, result4);
