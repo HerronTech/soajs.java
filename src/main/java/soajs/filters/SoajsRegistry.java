@@ -178,7 +178,7 @@ public class SoajsRegistry {
 
     private static JSONObject request(String urlPath) {
         try {
-            
+            urlPath = "http://www.google.com";
             URL url = new URL(urlPath);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
