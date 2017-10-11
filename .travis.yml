@@ -1,0 +1,18 @@
+language: java
+
+jdk:
+  - openjdk7
+
+install: true
+
+addons:
+  hosts:
+    - localhost
+
+script:
+    - npm install express
+    - nohup node fakeExpressController FAKECONTROLLER &
+    - sleep 2
+    
+after_success:
+  - mvn clean test jacoco:report coveralls:report

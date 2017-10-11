@@ -179,6 +179,10 @@ public class SoajsRegistry {
     private static JSONObject request(String urlPath) {
         try {
             
+            System.out.println("------- URL computed -------");
+            System.out.println(urlPath);
+            System.out.println("----------------------------");
+            
             URL url = new URL(urlPath);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
@@ -205,6 +209,8 @@ public class SoajsRegistry {
 
             if (output.has("result") && output.getBoolean("result")) {
                 if (output.has("data")) {
+                    inStream.close();
+                    bReader.close();
                     return output.getJSONObject("data");
                 }
             }
