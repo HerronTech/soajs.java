@@ -15,10 +15,14 @@ import org.json.JSONObject;
 public class SoajsRequestUtilities {
 
     public static String getHost(JSONObject soajs) {
-        String host = soajs.getJSONObject("awareness").getString("host");
-        int port = soajs.getJSONObject("awareness").getInt("port");
+        if(soajs.has("awareness")){
+            String host = soajs.getJSONObject("awareness").getString("host");
+            int port = soajs.getJSONObject("awareness").getInt("port");
 
-        return host + ":" + port + "/";
+            return host + ":" + port + "/";
+        }else{
+            return "";
+        }
     }
 
     public static String getHost(JSONObject soajs, String serviceName) {
